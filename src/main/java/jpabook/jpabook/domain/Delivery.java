@@ -6,14 +6,14 @@ import javax.persistence.*;
 
 @Entity
 @Data
-public class Delevery {
+public class Delivery {
 
     @Id
     @GeneratedValue
-    @Column(name = "DELEVERY_ID")
+    @Column(name = "Delivery_ID")
     private Long id;
 
-    @OneToOne(mappedBy = "delevery")
+    @OneToOne(mappedBy = "Delivery")
     private Order order;
 
     @Embedded
