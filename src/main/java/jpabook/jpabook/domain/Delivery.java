@@ -13,7 +13,7 @@ public class Delivery {
     @Column(name = "Delivery_ID")
     private Long id;
 
-    @OneToOne(mappedBy = "Delivery")
+    @OneToOne(mappedBy = "delivery")
     private Order order;
 
     @Embedded
