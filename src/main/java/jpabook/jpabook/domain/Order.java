@@ -25,7 +25,7 @@ public class Order {
     private List<OrderItem> orderItems = new ArrayList<OrderItem>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "Delivery_ID") 
+    @JoinColumn(name = "Delivery_ID")
     private Delivery delivery;
 
     private LocalDateTime orderDate;
@@ -81,7 +81,7 @@ public class Order {
     public int getTotalPrice() {
         int totalPrice = 0;
         for(OrderItem orderItem : orderItems) {
-            totalPrice += orderItem.getOrderPrice();
+            totalPrice += orderItem.getTotalPrice();
         }
         return totalPrice;
     }
