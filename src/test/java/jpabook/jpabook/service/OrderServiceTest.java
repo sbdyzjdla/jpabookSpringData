@@ -1,6 +1,7 @@
 package jpabook.jpabook.service;
 
 import jpabook.jpabook.domain.*;
+import jpabook.jpabook.exception.NotEnoughStockException;
 import jpabook.jpabook.repository.OrderRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +54,35 @@ public class OrderServiceTest {
     @Test
     public void 주문취소() {
 
+        //givne
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10); //이름, 가격 재고
+        int orderCount = 2;
+
+        //when
+        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
+        orderService.cancelOrder(orderId);
+
+        //then
+        Order getOrder = orderRepository.findOne(orderId);
+
+        assertEquals("주문 취소의 상태는 CANCEL 이다.", OrderStatus.CANCEL, getOrder.getStatus());
+        assertEquals("주문이 취소된 상품의 그만큼 재고가 증가해야 한다.", 10 , item.getStockQuantity());
+
+    }
+
+    @Test(expected = NotEnoughStockException.class)
+    public void 상품주문_재고수량초과() throws Exception {
+        //given
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10); //이름, 가격 재고
+        int orderCount = 11;
+
+        //when
+        orderService.order(member.getId(), item.getId(), orderCount);
+
+        //then
+        fail("재고 수량 부족 예외가 발생해야 한다.");
     }
 
     private Member createMember() {
