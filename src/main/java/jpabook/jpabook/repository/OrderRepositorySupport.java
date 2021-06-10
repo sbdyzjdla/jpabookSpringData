@@ -1,29 +1,34 @@
 package jpabook.jpabook.repository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jpabook.jpabook.domain.Order;
 import jpabook.jpabook.domain.OrderSearch;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
-
-public interface OrderRepository extends JpaRepository<Order, Long> {
-
-    //jpa 명세(specification)를 이용한 검색 기능 구현
 
 
 
-    //예전 검색로직
+@RequiredArgsConstructor
+@Repository
+public class OrderRepositorySupport {
+
+    private final JPAQueryFactory queryFactory;
+
+
+//    public List<Order> findAll(OrderSearch orderSearch) {
+//        return queryFactory.selectFrom(order)
+//    }
+}
+
+//    public List<WorkGroup> findByWorkGroupNm(String name) {
+//        return queryFactory.selectFrom(workGroup)
+//                .where(workGroup.workGroupNm.containsIgnoreCase(name))
+//                .fetch();
+//    }
+
 //    public List<Order> findAll (OrderSearch orderSearch) {
 //        //JPQL
 //        String jpql = "select o from Order o join o.member m";
@@ -63,4 +68,3 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 //
 //        return query.getResultList();
 //    }
-}

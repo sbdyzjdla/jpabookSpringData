@@ -24,7 +24,8 @@ public class ItemService {
     }
 
     public Item findOne(Long itemId) {
-        return itemRepository.findOne(itemId);
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException());
     }
 
     /**
@@ -32,7 +33,8 @@ public class ItemService {
      */
     @Transactional
     public void updateItem(Long id, String name, int price) {
-        Item item = itemRepository.findOne(id);
+        Item item = itemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException());
         item.setName(name);
         item.setPrice(price);
     }
