@@ -25,11 +25,13 @@ public class OrderRepositorySupport extends QuerydslRepositorySupport {
         this.queryFactory = queryFactory;
     }
 
-//    public List<Order> findAll(OrderSearch orderSearch) {
-//        return queryFactory.selectFrom(order)
-//                .join(order.member)
-//                .where(orderSearch.
-//    }
+    public List<Order> findAll(OrderSearch orderSearch) {
+        return queryFactory.selectFrom(order)
+                .join(order.member)
+                .where(order.status.eq(orderSearch.getOrderStatus())
+                        .and(order.member.name.eq(orderSearch.getMemberName())))
+                .fetch();
+    }
 
 
 }

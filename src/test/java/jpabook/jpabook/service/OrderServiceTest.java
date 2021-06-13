@@ -3,6 +3,7 @@ package jpabook.jpabook.service;
 import jpabook.jpabook.domain.*;
 import jpabook.jpabook.exception.NotEnoughStockException;
 import jpabook.jpabook.repository.OrderRepository;
+import jpabook.jpabook.repository.OrderRepositorySupport;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -29,6 +33,8 @@ public class OrderServiceTest {
     OrderService orderService;
     @Autowired
     OrderRepository orderRepository;
+    @Autowired
+    OrderRepositorySupport orderRepositorySupport;
 
     @Test
     public void 상품주문() throws Exception {
@@ -42,7 +48,9 @@ public class OrderServiceTest {
         Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
 
         //then
-        Order getOrder = orderRepository.findOne(orderId);
+        Order getOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException());
+
 
         assertEquals("상품 주문시 상내는 ORDER", OrderStatus.ORDER, getOrder.getStatus());
         assertEquals("주문한 상품 종류 슈가 정확해야 한다.", 1, getOrder.getOrderItems().size());
@@ -64,7 +72,8 @@ public class OrderServiceTest {
         orderService.cancelOrder(orderId);
 
         //then
-        Order getOrder = orderRepository.findOne(orderId);
+        Order getOrder = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException());
 
         assertEquals("주문 취소의 상태는 CANCEL 이다.", OrderStatus.CANCEL, getOrder.getStatus());
         assertEquals("주문이 취소된 상품의 그만큼 재고가 증가해야 한다.", 10 , item.getStockQuantity());
@@ -83,6 +92,28 @@ public class OrderServiceTest {
 
         //then
         fail("재고 수량 부족 예외가 발생해야 한다.");
+    }
+
+    @Test
+    public void 주문조회() {
+        //given
+        Member member = createMember();
+        Item item = createBook("시골 JPA", 10000, 10); //이름, 가격 재고
+        int orderCount = 2;
+
+        Long orderId = orderService.order(member.getId(), item.getId(), orderCount);
+        OrderSearch orderSearch = new OrderSearch();
+
+        //when
+        orderSearch.setOrderStatus(OrderStatus.ORDER);
+        orderSearch.setMemberName("회원1");
+        List<Order> orderList = orderService.findOrders(orderSearch);
+
+        //then
+        assertThat(orderList.get(0).getStatus()).isEqualTo(OrderStatus.ORDER);
+        assertThat(orderList.get(0).getOrderItems().get(0).getItem().getName()).isEqualTo("시골 JPA");
+        assertThat(orderList.get(0).getMember().getName()).isEqualTo("회원1");
+
     }
 
     private Member createMember() {
