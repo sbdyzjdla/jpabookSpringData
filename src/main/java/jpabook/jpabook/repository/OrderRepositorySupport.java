@@ -1,33 +1,38 @@
 package jpabook.jpabook.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import javafx.beans.binding.BooleanExpression;
 import jpabook.jpabook.domain.Order;
 import jpabook.jpabook.domain.OrderSearch;
+import jpabook.jpabook.domain.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 
+//static import 사용시
+import static jpabook.jpabook.domain.QOrder.order;
 
-
-@RequiredArgsConstructor
 @Repository
-public class OrderRepositorySupport {
+public class OrderRepositorySupport extends QuerydslRepositorySupport {
 
     private final JPAQueryFactory queryFactory;
 
+    public OrderRepositorySupport(JPAQueryFactory queryFactory) {
+        super(Order.class);
+        this.queryFactory = queryFactory;
+    }
 
 //    public List<Order> findAll(OrderSearch orderSearch) {
 //        return queryFactory.selectFrom(order)
+//                .join(order.member)
+//                .where(orderSearch.
 //    }
-}
 
-//    public List<WorkGroup> findByWorkGroupNm(String name) {
-//        return queryFactory.selectFrom(workGroup)
-//                .where(workGroup.workGroupNm.containsIgnoreCase(name))
-//                .fetch();
-//    }
+
+}
 
 //    public List<Order> findAll (OrderSearch orderSearch) {
 //        //JPQL
